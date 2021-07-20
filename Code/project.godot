@@ -8,6 +8,22 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "Maze",
+"language": "GDScript",
+"path": "res://Maze/assets/Maze.gd"
+}, {
+"base": "MeshInstance",
+"class": "Room",
+"language": "GDScript",
+"path": "res://Maze/assets/Room.gd"
+} ]
+_global_script_class_icons={
+"Maze": "",
+"Room": ""
+}
+
 [application]
 
 config/name="Amazewallz"

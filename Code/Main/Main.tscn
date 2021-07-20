@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Main/assets/Main.gd" type="Script" id=1]
 [ext_resource path="res://Maze/Maze.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Player/assets/Model.tscn" type="PackedScene" id=3]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -13,3 +14,6 @@ transform = Transform( 1, 0, 0, 0, 0.907132, 0.420846, 0, -0.420846, 0.907132, 0
 
 [node name="Camera" type="Camera" parent="CameraPivot"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.92669 )
+
+[node name="WalkInPlace_v001" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00674582, 0, -0.00338507 )

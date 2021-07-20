@@ -6,6 +6,7 @@
 size = Vector3( 1, 1, 1 )
 
 [node name="Room" type="MeshInstance"]
+transform = Transform( 0.786209, 0, 0, 0, 1, 0, 0, 0, 0.786209, 0, 0, 0 )
 mesh = SubResource( 1 )
 material/0 = null
 script = ExtResource( 1 )

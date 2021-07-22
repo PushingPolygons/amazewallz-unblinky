@@ -6,14 +6,8 @@ var grid_y: int = 0
 var neighbours: Array = [] # Room.
 
 
+func AddNeighbour(room: Room) -> void:
+	neighbours.append(room)
 
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func Visited():
+	pass

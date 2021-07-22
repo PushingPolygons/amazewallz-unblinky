@@ -1,12 +1,18 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Maze/assets/Room.gd" type="Script" id=1]
+[ext_resource path="res://Shaders/basic_shader.tres" type="Shader" id=2]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 1, 1 )
 
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/BaseColor = Color( 0.141176, 0.878431, 0.188235, 1 )
+
 [node name="Room" type="MeshInstance"]
-transform = Transform( 0.786209, 0, 0, 0, 1, 0, 0, 0, 0.786209, 0, 0, 0 )
+transform = Transform( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.9, 0, 0, 0 )
 mesh = SubResource( 1 )
-material/0 = null
+material/0 = SubResource( 2 )
 script = ExtResource( 1 )

@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" load_steps=3 format=2]
+
+[sub_resource type="VisualShaderNodeColorConstant" id=1]
+constant = Color( 0.216568, 0.419242, 0.172225, 1 )
+
+[sub_resource type="VisualShaderNodeColorUniform" id=2]
+uniform_name = "BaseColor"
+
+[resource]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform vec4 BaseColor : hint_color;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// ColorUniform:3
+	vec3 n_out3p0 = BaseColor.rgb;
+	float n_out3p1 = BaseColor.a;
+
+// Output:0
+	ALBEDO = n_out3p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -367.165, 77.6741 )
+nodes/fragment/0/position = Vector2( 440, 220 )
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( 100, 120 )
+nodes/fragment/3/node = SubResource( 2 )
+nodes/fragment/3/position = Vector2( 100, 220 )
+nodes/fragment/connections = PoolIntArray( 3, 0, 0, 0 )

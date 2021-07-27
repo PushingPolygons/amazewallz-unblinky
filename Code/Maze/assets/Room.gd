@@ -8,13 +8,16 @@ var neighbours: Array = [] # Room.
 
 
 
-func GetUnvisitedNeighbour() -> Room:
-	neighbours.shuffle()
-	for neighbour in neighbours:
-		if neighbour.visited == false:
-			return neighbour
+func GetRandomNeighbour() -> Room:
+	if neighbours.size() > 0:
 	
-	return null
+		var rando = randi() % neighbours.size()
+		var room: Room = neighbours[rando]
+		neighbours.remove(rando)
+		
+		return room
+	else:
+		return null
 	
 
 func AddNeighbour(room: Room) -> void:
@@ -28,5 +31,7 @@ func ColorNeighbours(color: Color) -> int:
 	return neighbours.size()
 	
 	
-func ColorRoom(color: Color):
+func Visited(color: Color) -> Room:
 	get_surface_material(0).set_shader_param("BaseColor", color)
+	visited = true
+	return self

@@ -1,7 +1,7 @@
 extends Spatial
 class_name Maze
 
-enum Directions { north, south, east, west } # Obsolete?
+
 
 const ROOM_PS: PackedScene = preload("res://Maze/assets/Room.tscn")
 
@@ -17,9 +17,15 @@ func _ready():
 	randomize()
 	SpawnTheGrid()
 	FindTheNeighbours()
-	CreatePath(1, 1)
+	CreatePath(5, 5)
 	
-	
+
+func DropWalls(room_a, room_b) -> void:
+	if room_a.grid_x < room_b.grid_x:
+		room_a.DropWall(Directions.right)
+		room_b.DropWall(Directions.right)
+		
+
 	
 	
 #	var temp_room: Room = GetRoomAt(1, -5)
@@ -28,9 +34,10 @@ func _ready():
 #		print("Grid X: %s | Grid Y: %s" % [temp_room.grid_x, temp_room.grid_y])
 		
 		
-	
-	
-func GetDeltaDirection(current_room: Room, next_room: Room) -> Vector2:
+#------------------------------------------------------------------------------
+# DeltaDirection()
+#------------------------------------------------------------------------------
+func GetDeltaDirection(current_room, next_room) -> Vector2:
 
 	if current_room.grid_x < next_room.grid_x:
 		return Vector2(1, 0)
@@ -44,7 +51,7 @@ func GetDeltaDirection(current_room: Room, next_room: Room) -> Vector2:
 	return Vector2(0, 0)
 	
 	
-func GetRoomAt(grid_x: int, grid_y: int) -> Room:
+func GetRoomAt(grid_x: int, grid_y: int):
 	if grid_x >= 0 and grid_x < maze_width and grid_y >= 0 and grid_y < maze_height:
 		return rooms[grid_y * maze_width + grid_x]
 	
@@ -64,7 +71,7 @@ func SpawnTheGrid() -> void:
 
 func FindTheNeighbours():
 	for room in rooms:
-		if room is Room: # Casting
+		#if room is Room: # Casting
 		
 			# Look left.
 			if room.grid_x - 1 >= 0:
@@ -84,12 +91,12 @@ func FindTheNeighbours():
 			
 			#print(str(room.neighbours.size()))
 			
-			
+#------------------------------------------------------------------------------
+# CreatePath()
+#------------------------------------------------------------------------------
 func CreatePath(start_x: int, start_y: int) -> void:
-	var current_x: int = start_x
-	var current_y: int = start_y
 	
-	var current_room: Room = rooms[current_y * maze_width + current_x]
+	var current_room = rooms[start_y * maze_width + start_x]
 	
 	# Pathfinding.
 	for i in path_length:
@@ -99,26 +106,34 @@ func CreatePath(start_x: int, start_y: int) -> void:
 			# Where is rando?
 			visited_rooms.append(current_room.Visited(Color.brown))
 			
-			var next_room = current_room.GetRandomNeighbour() # Can be null.
-			var direction: int = Directions.north
+			# If we are on 0 or width -1 pop back
+		
 			
-
+			var next_room = current_room.GetRandomNeighbour() # Can be null.
+			
+			# Checking for null.
 			if next_room:
-				var x: int = 0
-				var y: int = 0
-				var delta_direction: Vector2 = Vector2.ZERO
+				
+				if next_room.grid_x >= 0 and next_room.grid_x < maze_width and next_room.grid_y >= 0 and next_room.grid_y < maze_width:
+					
+					var x: int = 0
+					var y: int = 0
+					var delta_direction: Vector2 = Vector2.ZERO
 
-				next_room.Visited(Color.forestgreen)
-							
-				delta_direction = GetDeltaDirection(current_room, next_room)
-				delta_direction = delta_direction * 2
-				current_room = GetRoomAt(current_room.grid_x + delta_direction.x, current_room.grid_y + delta_direction.y)
+					next_room.Visited(Color.forestgreen)
+								
+					delta_direction = GetDeltaDirection(current_room, next_room)
+					
+					delta_direction = delta_direction * 2
+					current_room = GetRoomAt(current_room.grid_x + delta_direction.x, current_room.grid_y + delta_direction.y)
+					
+					if !current_room:
+						break
 				
 			else:
 				next_room = visited_rooms.pop_back() # Rewind.
 				
 				# Check for Zero?
-				
 					
 		else:
 			current_room = visited_rooms.pop_back() # Rewind.

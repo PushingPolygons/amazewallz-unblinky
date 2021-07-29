@@ -4,4 +4,4 @@
 
 [node name="Maze" type="Spatial"]
 script = ExtResource( 1 )
-path_length = 5
+path_length = 3

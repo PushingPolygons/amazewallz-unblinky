@@ -30,8 +30,18 @@ func _ready():
 		
 	
 	
-func GetDeltaDirection(curent_room: Room, next_room: Room) -> Vector2:
-	return Vector2(1, 0)
+func GetDeltaDirection(current_room: Room, next_room: Room) -> Vector2:
+
+	if current_room.grid_x < next_room.grid_x:
+		return Vector2(1, 0)
+	if current_room.grid_x > next_room.grid_x:
+		return Vector2(-1, 0)
+	if current_room.grid_y < next_room.grid_y:
+		return Vector2(0, 1)
+	if current_room.grid_y > next_room.grid_y:
+		return Vector2(0, -1)
+	
+	return Vector2(0, 0)
 	
 	
 func GetRoomAt(grid_x: int, grid_y: int) -> Room:
@@ -81,9 +91,8 @@ func CreatePath(start_x: int, start_y: int) -> void:
 	
 	var current_room: Room = rooms[current_y * maze_width + current_x]
 	
-	# Pathfinding
+	# Pathfinding.
 	for i in path_length:
-		#print(i)
 		
 		if current_room: # Is there valid?
 			
@@ -99,24 +108,12 @@ func CreatePath(start_x: int, start_y: int) -> void:
 				var y: int = 0
 				var delta_direction: Vector2 = Vector2.ZERO
 
-				#next_room.Visited(Color.forestgreen)
+				next_room.Visited(Color.forestgreen)
 							
-				delta_direction = GetDeltaDirection(current_room, next_room) * 2
+				delta_direction = GetDeltaDirection(current_room, next_room)
+				delta_direction = delta_direction * 2
 				current_room = GetRoomAt(current_room.grid_x + delta_direction.x, current_room.grid_y + delta_direction.y)
 				
-				
-#
-#				if current_room.grid_x < next_room.grid_x:
-#					direction = Directions.west
-#
-#				if current_room.grid_x > next_room.grid_x:
-#					direction = Directions.east
-#
-#				if current_room.grid_y < next_room.grid_y:
-#					direction = Directions.north
-#
-#				if current_room.grid_y > next_room.grid_y:
-#					direction = Directions.south
 			else:
 				next_room = visited_rooms.pop_back() # Rewind.
 				
@@ -126,27 +123,3 @@ func CreatePath(start_x: int, start_y: int) -> void:
 		else:
 			current_room = visited_rooms.pop_back() # Rewind.
 			
-
-	
-#
-#func SkipARoom() -> void:
-#	# Check X and Y for the delta change to determine direction to skip.
-#	var direction = Directions.north
-#
-#
-#	# switch(direction) { } C#
-#	match direction:
-#		Directions.north:
-#			print("north")
-#		Directions.south:
-#			print("south")
-#		Directions.east:
-#			print("east")
-#		Directions.west:
-#			print("west")
-#
-	
-
-# Test Success.
-#	var my_room = rooms[7]
-#	my_room.ColorNeighbours(Color.blue)

@@ -1,19 +1,64 @@
-extends MeshInstance
+extends Spatial
 class_name Room
 
+var visited: bool = false
 var grid_x: int = 0
 var grid_y: int = 0
 var neighbours: Array = [] # Room.
 
+func DropWall(direction):
+	match direction:
+		Directions.UP:
+			$WallUp.hide()
+			
+		Directions.DOWN:
+			$WallUp.hide()
+			
+		Directions.LEFT:
+			$WallUp.hide()
+			
+		Directions.RIGHT:
+			$WallUp.hide()
 
+#------------------------------------------------------------------------------
+# Retuns a valid (non-visited) Room instance from the neighbours[].
+# Returns null if there are no elements in the array.
+#------------------------------------------------------------------------------
+func GetRandomNeighbour() -> Room:
+	
+	for neighbour in neighbours:
+				
+		if neighbours.size() > 0:
+		
+			var rando = randi() % neighbours.size()
+			var room: Room = neighbours[rando]
+			
+			if room.visited:
+				neighbours.remove(rando)
+			else:
+				neighbours.remove(rando)
+				return room
+				
+	return null
 
+		
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+func AddNeighbour(room) -> void:
+	neighbours.append(room)
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+func ColorNeighbours(color: Color) -> int:
+	for neighbour in neighbours:
+		neighbour.get_surface_material(0).set_shader_param("BaseColor", color)
+			
+	return neighbours.size()
+	
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+func Visited(color: Color):
+	$Floor.get_surface_material(0).set_shader_param("BaseColor", color)
+	visited = true
+	return self
+	

@@ -1,6 +1,7 @@
 extends Node
 
-const UP = 0
-const DOWN = 1
-const LEFT = 2
-const RIGHT = 3
+const ZERO = 0
+const UP = 1
+const DOWN = 2
+const LEFT = 3
+const RIGHT = 4

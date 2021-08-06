@@ -4,21 +4,24 @@ class_name Room
 var visited: bool = false
 var grid_x: int = 0
 var grid_y: int = 0
-var neighbours: Array = [] # Room.
+var neighbours: Array = [] # An array of Room elements.
 
+#------------------------------------------------------------------------------
+# DropWall() will hide the wall in the specified direction.
+#------------------------------------------------------------------------------
 func DropWall(direction):
 	match direction:
 		Directions.UP:
 			$WallUp.hide()
 			
 		Directions.DOWN:
-			$WallUp.hide()
+			$WallDown.hide()
 			
 		Directions.LEFT:
-			$WallUp.hide()
+			$WallLeft.hide()
 			
 		Directions.RIGHT:
-			$WallUp.hide()
+			$WallRight.hide()
 
 #------------------------------------------------------------------------------
 # Retuns a valid (non-visited) Room instance from the neighbours[].

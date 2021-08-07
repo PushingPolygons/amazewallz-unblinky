@@ -5,10 +5,23 @@ const ROOM_PS: PackedScene = preload("res://Maze/assets/Room.tscn")
 
 export var maze_width: int = 10
 export var maze_height: int = 10
-export var path_length: int = 0
+export var start_x: int = 1
+export var start_y: int = 1
+
+# Colors
+export var color_default: Color
+export var color_current: Color
+export var color_backtrack: Color
+export var color_neighbours: Color
+export var color_visited: Color
+
+var path_max: int = maze_width * maze_height
 
 var rooms: Array = [] 
 var visited_rooms: Array = []
+var current_room: Room = null
+var next_room: Room = null
+var step: int = 0
 
 #------------------------------------------------------------------------------
 # Ready()
@@ -17,7 +30,26 @@ func _ready():
 	randomize()
 	SpawnTheGrid()
 	FindTheNeighbours()
-	CreatePath(5, 5)
+	ResetMaze()
+	
+#------------------------------------------------------------------------------
+# Process()
+#------------------------------------------------------------------------------
+func _process(delta_time):
+	if Input.is_action_just_pressed("step"):
+		StepPath()
+		
+	if Input.is_action_just_pressed("reset_maze"):
+		ResetMaze()
+
+#------------------------------------------------------------------------------
+# Reset maze.
+#------------------------------------------------------------------------------
+func ResetMaze() -> void:
+	for room in rooms:
+		room.Reset(color_default)
+		
+	StartPath()
 	
 #------------------------------------------------------------------------------
 # GetRoomAt(x, y) in grid coords. Single array approach.
@@ -48,24 +80,22 @@ func SpawnTheGrid() -> void:
 func FindTheNeighbours() -> void:
 	for room in rooms:
 
-			# Look left.
-			if room.grid_x - 1 >= 0:
-				room.AddNeighbour(rooms[room.grid_y * maze_width + room.grid_x - 1])
+		# Look left.
+		if room.grid_x - 1 >= 0:
+			room.AddNeighbour(rooms[room.grid_y * maze_width + room.grid_x - 1])
+		
+		# Look right.
+		if room.grid_x + 1 < maze_width:
+			room.AddNeighbour(rooms[room.grid_y * maze_width + room.grid_x + 1])
 			
-			# Look right.
-			if room.grid_x + 1 < maze_width:
-				room.AddNeighbour(rooms[room.grid_y * maze_width + room.grid_x + 1])
-				
-			# Look up.
-			if room.grid_y - 1 >= 0:
-				room.AddNeighbour(rooms[(room.grid_y - 1) * maze_width + room.grid_x])
-				
-			# Look down.
-			if room.grid_y + 1 < maze_height:
-				room.AddNeighbour(rooms[(room.grid_y + 1) * maze_width + room.grid_x])
+		# Look up.
+		if room.grid_y - 1 >= 0:
+			room.AddNeighbour(rooms[(room.grid_y - 1) * maze_width + room.grid_x])
 			
-			#print(str(room.neighbours.size()))
-
+		# Look down.
+		if room.grid_y + 1 < maze_height:
+			room.AddNeighbour(rooms[(room.grid_y + 1) * maze_width + room.grid_x])
+		
 #------------------------------------------------------------------------------
 # Drop the Walls between 2 rooms.
 #------------------------------------------------------------------------------
@@ -90,48 +120,70 @@ func DropWallsBetween(room_a, room_b) -> void:
 	if room_a.grid_y > room_b.grid_y:
 		room_a.DropWall(Directions.UP)
 		room_b.DropWall(Directions.DOWN)
-		
+
 #------------------------------------------------------------------------------
-# CreatePath()
 #------------------------------------------------------------------------------
-func CreatePath(start_x: int, start_y: int) -> void:
-	
-	var current_room: Room = GetRoomAt(start_x, start_y)
-	
-#	var room_a: Room = GetRoomAt(4, 3)
-#	var room_b: Room = GetRoomAt(3, 3)
-	
-#	var room_a: Room = rooms[2 * maze_width + 0]
-#	var room_b: Room = rooms[3 * maze_width + 0]
-	
-#	room_a.Visited(Color.red)
-#	room_b.Visited(Color.yellow)
-
-#	DropWallsBetween(room_a, room_b)
-
-
-	# Pathfinding.
-	for i in path_length:
-		# TODO: Make a timer later that can delay the path as it blocks out each room.
-		
+func RemoveSelfFromNeighbours():
+	for n in current_room.neighbours:
+		var i: int = n.neighbours.find(current_room)
+#		if i > -1:
+#			n.neighbours.remove(i)
+#			print(n.neighbours.size())
 		print(i)
 
-		if current_room: # Is it valid?
+#------------------------------------------------------------------------------
+# Pick the starting point.
+# Member function.
+#------------------------------------------------------------------------------
+func StartPath() -> void:
+	current_room = GetRoomAt(start_x, start_y)
+	if current_room:
+		current_room.ColorNeighbours(color_neighbours)
+		current_room.Visited(color_visited)
+		visited_rooms.append(current_room)
+		RemoveSelfFromNeighbours()
+		Report()
 
-			current_room.Visited(Color.brown)
-			visited_rooms.append(current_room)
+#------------------------------------------------------------------------------
+# CreatePath() Bores out a random path from the maze grid.
+# Pathfinding member function.
+#------------------------------------------------------------------------------
+func StepPath() -> void:
+	current_room.ColorNeighbours(color_default) # Set the neighbours back to default color.
+	next_room = current_room.GetRandomNeighbour() # Can be null.
 
-			var next_room: Room = current_room.GetRandomNeighbour() # Can be null.
+	if step >= 0 and step < path_max:
+		if next_room:
+			DropWallsBetween(current_room, next_room)
+			
+			var current_room_index: int = next_room.neighbours.find(current_room)
+			var next_room_index: int = current_room.neighbours.find(next_room)
+			
+			if next_room_index > -1:
+				next_room.neighbours.remove(next_room_index)
+			
+			if current_room_index > -1:
+				current_room.neighbours.remove(current_room_index)
+				
+			visited_rooms.append(next_room)
+			current_room = next_room
+			
+			# Color this step.
+			current_room.ColorNeighbours(color_neighbours)
+			RemoveSelfFromNeighbours()
+			step += 1
 
-			# Checking for null.
-			if next_room:
-				DropWallsBetween(current_room, next_room)
-
-			else:
-				next_room = visited_rooms.pop_back() # Rewind.
-
-#				# Check for Zero?
-#
-#		else:
-#			current_room = visited_rooms.pop_back() # Rewind.
+		else:
+			current_room.Visited(color_visited)
+			current_room = visited_rooms.pop_back() # Rewind.
+			current_room.ColorSelf(color_backtrack)
+			step -= 1
+			
+	Report()
+		
+func Report() -> void:
+	print("Step: %s" % step)
+	print("Current room maze coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
+	print("Neighbours size: %s" % current_room.neighbours.size())
 	print("Visited Rooms: %s" % visited_rooms.size())
+	print("---------------------------------")

@@ -18,12 +18,13 @@ margin_bottom = 61.2634
 custom_colors/font_color = Color( 0.764706, 0.768627, 0.329412, 1 )
 text = "- LMB [Step]
 - RMB [Reset]"
+percent_visible = 0.619048
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Timer" type="Timer" parent="Label"]
-wait_time = 0.146
+wait_time = 0.1
 autostart = true
 
 [connection signal="timeout" from="Label/Timer" to="." method="_on_Timer_timeout"]

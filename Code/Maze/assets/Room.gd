@@ -1,7 +1,7 @@
 extends Spatial
 class_name Room
 
-var visited: bool = false
+#var visited: bool = false
 var grid_x: int = 0
 var grid_y: int = 0
 var neighbours: Array = [] # An array of Room elements.
@@ -15,7 +15,7 @@ func Reset(color: Color) -> void:
 	$WallDown.show()
 	$WallLeft.show()
 	$WallRight.show()
-	visited = false
+#	visited = false
 	
 #------------------------------------------------------------------------------
 # DropWall() will hide the wall for the specified direction.
@@ -64,7 +64,7 @@ func ColorSelf(color: Color) -> void:
 			
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-func Visited(color: Color):
-	$Floor.get_surface_material(0).set_shader_param("BaseColor", color)
-	visited = true
-	return self
+#func Visited(color: Color):
+#	$Floor.get_surface_material(0).set_shader_param("BaseColor", color)
+##	visited = true
+#	return self

@@ -4,7 +4,6 @@ class_name Room
 var visited: bool = false
 var grid_x: int = 0
 var grid_y: int = 0
-var neighbours: Array = [] # Room.
 
 func DropWall(direction):
 	match direction:
@@ -12,53 +11,35 @@ func DropWall(direction):
 			$WallUp.hide()
 			
 		Directions.DOWN:
-			$WallUp.hide()
+			$WallDown.hide()
 			
 		Directions.LEFT:
-			$WallUp.hide()
+			$WallLeft.hide()
 			
 		Directions.RIGHT:
-			$WallUp.hide()
+			$WallRight.hide()
 
-#------------------------------------------------------------------------------
-# Retuns a valid (non-visited) Room instance from the neighbours[].
-# Returns null if there are no elements in the array.
-#------------------------------------------------------------------------------
-func GetRandomNeighbour() -> Room:
-	
-	for neighbour in neighbours:
-				
-		if neighbours.size() > 0:
-		
-			var rando = randi() % neighbours.size()
-			var room: Room = neighbours[rando]
-			
-			if room.visited:
-				neighbours.remove(rando)
-			else:
-				neighbours.remove(rando)
-				return room
-				
-	return null
-
-		
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-func AddNeighbour(room) -> void:
-	neighbours.append(room)
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-func ColorNeighbours(color: Color) -> int:
-	for neighbour in neighbours:
-		neighbour.get_surface_material(0).set_shader_param("BaseColor", color)
-			
-	return neighbours.size()
-	
+func Reset(color: Color) -> void:
+	ColorFloor(color)
+	$WallUp.show()
+	$WallDown.show()
+	$WallLeft.show()
+	$WallRight.show()
+
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-func Visited(color: Color):
+func ColorFloor(color: Color) -> void:
 	$Floor.get_surface_material(0).set_shader_param("BaseColor", color)
+
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+func Visit(color: Color):
+	ColorFloor(color)
 	visited = true
 	return self
 	

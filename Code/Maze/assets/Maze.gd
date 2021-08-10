@@ -13,14 +13,14 @@ export var seek_color: Color
 export var visited_color: Color
 
 
-
 var rooms: Array = [] # Single arrayed approach. [y * array_width + x]
 
 
 # Path variables.
 var current_room: Room = null
-var visited_rooms: Array = []
-var path_step: int = 0
+var visited_rooms: Array = [] # Rewinding
+var visited_count: int = 0
+var step_count: int = 0 # 
 var path_max: int = 0
 
 #------------------------------------------------------------------------------
@@ -28,8 +28,16 @@ var path_max: int = 0
 #------------------------------------------------------------------------------
 func _ready():
 	randomize()
+	path_max = maze_width * maze_height
 	SpawnTheGrid() # Fills up rooms[].
-	Initialize()
+	for room in rooms:
+		room.ColorFloor(default_color)
+	
+	# Path stuff.
+	var grid_x: int = randi() % maze_width
+	var grid_y: int = randi() % maze_height
+	StartPath(grid_x, grid_y)
+	#Initialize()
 
 	
 #------------------------------------------------------------------------------
@@ -39,20 +47,25 @@ func _process(_delta):
 	if Input.is_action_just_pressed("step_path"):
 		StepPath()
 		
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-func Initialize() -> void:
-	
-	path_max = maze_width * maze_height
 
-	for room in rooms:
-		room.ColorFloor(default_color)
 		
-	visited_rooms.clear()
-	path_step = 0
-	
-	# TODO: Random.
-	StartPath(0, 2)
+#
+##------------------------------------------------------------------------------
+##------------------------------------------------------------------------------
+#func Initialize() -> void:
+#
+#	path_max = maze_width * maze_height
+#
+#	for room in rooms:
+#		room.ColorFloor(default_color)
+#
+#	visited_rooms.clear()
+#	path_step = 0
+#
+#	# TODO: Random.
+#	var grid_x: int = randi() % maze_width
+#	var grid_y: int = randi() % maze_height
+#	StartPath(grid_x, grid_y)
 	
 	
 			
@@ -64,11 +77,14 @@ func StartPath(start_x: int, start_y: int) -> void:
 	
 	if current_room:
 		current_room.Visit(current_color)
+		visited_rooms.append(current_room)
+		visited_count += 1
+		
 		var neighbours: Array = FindTheNeighbours(current_room)
 		for neighbour in neighbours:
 			neighbour.ColorFloor(seek_color)
 			
-		print("---------------- Step (%s)" % path_step)
+		print("---------------- Step (%s)" % step_count)
 		print("Grid coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
 		print("Neighbour count: %s" % neighbours.size())
 
@@ -78,37 +94,74 @@ func StartPath(start_x: int, start_y: int) -> void:
 # LMB click?
 #------------------------------------------------------------------------------
 func StepPath():
-	path_step += 1
-	print("---------------- Step (%s)" % path_step)
-	print("Grid coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
-	
-	# Erase current neighbours grapics.
-	var neighbours: Array = FindTheNeighbours(current_room)
-	for n in neighbours:
-		n.ColorFloor(default_color)
-	
-	# Get the next random room.
-	var rando: int = randi() % neighbours.size()
-	current_room = neighbours[rando] # Increment.
-	current_room.Visit(current_color)
-	
-	neighbours = FindTheNeighbours(current_room)
-	
-	for n in neighbours:
-		n.ColorFloor(seek_color)
-	
-	print("Neighbour count: %s" % neighbours.size())
-
-
+	if visited_count < path_max:
+		step_count += 1
+		print("---------------- Step (%s)" % step_count)
+		print("Grid coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
+		
+		var neighbours: Array = FindTheNeighbours(current_room)
+		if neighbours.size() > 0:
+			
+			# Erase current neighbours grapics.
+			for n in neighbours:
+				n.ColorFloor(default_color)
+		
+			# Get the next random room.
+			var rando: int = randi() % neighbours.size()
+			var next_room: Room = neighbours[rando] # Increment.
+			DropWalls(current_room, next_room)
+			current_room.ColorFloor(visited_color)
+			current_room = next_room
+			current_room.Visit(current_color)
+			visited_rooms.append(current_room)
+			visited_count += 1
+			
+			# Color the neighbours.
+			neighbours = FindTheNeighbours(current_room)
+			for n in neighbours:
+				n.ColorFloor(seek_color)
+			
+			print("Neighbour count: %s" % neighbours.size())
+			
+		# Dead end.
+		else:
+			current_room.ColorFloor(visited_color)
+			current_room = visited_rooms.pop_back()
+			current_room.ColorFloor(current_color)
+			
+			# HACK: Code dup!
+			neighbours = FindTheNeighbours(current_room)
+			for n in neighbours:
+				n.ColorFloor(seek_color)
+	else:
+		print("Maze is complete.")
+		#Main.ResetMaze()
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 func DropWalls(room_a, room_b) -> void:
+	
+	# Left
 	if room_a.grid_x < room_b.grid_x:
-		room_a.DropWall(Directions.right)
-		room_b.DropWall(Directions.right)
+		room_a.DropWall(Directions.RIGHT)
+		room_b.DropWall(Directions.LEFT)
+	
+	# Right	
+	if room_a.grid_x > room_b.grid_x:
+		room_a.DropWall(Directions.LEFT)
+		room_b.DropWall(Directions.RIGHT)
+	
+	# Up
+	if room_a.grid_y < room_b.grid_y:
+		room_a.DropWall(Directions.DOWN)
+		room_b.DropWall(Directions.UP)
+	
+	# Down
+	if room_a.grid_y > room_b.grid_y:
+		room_a.DropWall(Directions.UP)
+		room_b.DropWall(Directions.DOWN)
+	
 		
-
 	
 #------------------------------------------------------------------------------
 # Get Room at the specified grid coords. Can retun null.
@@ -218,3 +271,8 @@ func GetRandomNeighbour() -> Room:
 #	else:
 #		current_room = visited_rooms.pop_back() # Rewind.
 #
+
+
+func _on_Timer_timeout():
+	StepPath()
+	pass # Replace with function body.

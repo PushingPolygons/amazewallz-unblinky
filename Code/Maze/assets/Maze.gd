@@ -67,6 +67,13 @@ func Initialize() -> void:
 	var random_y: int = randi() % maze_height
 	StartPath(random_x, random_y)
 	
+	while visited_count < path_max:
+		StepPath()
+	
+	
+	#for i in path_max:
+	#	StepPath()
+	
 #------------------------------------------------------------------------------
 # GetRoomAt(x, y) in grid coords. Single array approach.
 # Use: var room = rooms[y * array_width + x]
@@ -176,11 +183,11 @@ func StartPath(grid_x: int, grid_y: int) -> void:
 		visited_count += 1
 		
 		# Slight duplication.
-		print("-------------Step-------------(%s)" % step)
-		print("Current room maze coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
-		print("Neighbour count: %s" % FindNeighbours(current_room).size())#neighbours.size())
-		print("Breadcrumbs: %s" % breadcrumbs.size())
-		print("---------------------------------")
+#		print("-------------Step-------------(%s)" % step)
+#		print("Current room maze coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
+#		print("Neighbour count: %s" % FindNeighbours(current_room).size())#neighbours.size())
+#		print("Breadcrumbs: %s" % breadcrumbs.size())
+#		print("---------------------------------")
 
 #------------------------------------------------------------------------------
 # CreatePath() Bores out a random path from the maze grid.
@@ -220,13 +227,13 @@ func StepPath() -> void:
 	
 	else:
 		print("Maze complete.")
-		Initialize()
+		#Initialize() #Loop
 		
-	
-	print("Current room maze coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
-	print("Neighbour count: %s" % FindNeighbours(current_room).size())#neighbours.size())
-	print("Breadcrumbs: %s" % breadcrumbs.size())
-	print("---------------------------------")
+
+#	print("Current room maze coords: [%s, %s]" % [current_room.grid_x, current_room.grid_y])
+#	print("Neighbour count: %s" % FindNeighbours(current_room).size())#neighbours.size())
+#	print("Breadcrumbs: %s" % breadcrumbs.size())
+#	print("---------------------------------")
 
 func _on_Timer_timeout():
 	StepPath()

@@ -25,6 +25,5 @@ __meta__ = {
 
 [node name="Timer" type="Timer" parent="Label"]
 wait_time = 0.1
-autostart = true
 
 [connection signal="timeout" from="Label/Timer" to="." method="_on_Timer_timeout"]

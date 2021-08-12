@@ -1,13 +1,19 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Worm/Worm.gd" type="Script" id=1]
+[ext_resource path="res://Player/assets/Model.tscn" type="PackedScene" id=2]
 
 [sub_resource type="CubeMesh" id=1]
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="SpatialMaterial" id=2]
 albedo_color = Color( 0.796078, 0.105882, 0.105882, 1 )
 
-[sub_resource type="BoxShape" id=2]
+[sub_resource type="CylinderMesh" id=4]
+top_radius = 0.001
+
+[sub_resource type="CapsuleShape" id=3]
+radius = 1.43588
+height = 2.98326
 
 [node name="Worm" type="KinematicBody"]
 script = ExtResource( 1 )
@@ -16,8 +22,15 @@ speed = 6.0
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
 mesh = SubResource( 1 )
-material/0 = SubResource( 3 )
+material/0 = SubResource( 2 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+transform = Transform( 0.3, 0, 0, 0, -1.31134e-08, -0.3, 0, 0.3, -1.31134e-08, -0.032091, 0.307947, 0.818077 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
-shape = SubResource( 2 )
+transform = Transform( 0.3, 0, 0, 0, -1.31134e-08, 0.3, 0, -0.3, -1.31134e-08, 0, 0.897617, 0 )
+shape = SubResource( 3 )
+
+[node name="WalkInPlace_v001" parent="." instance=ExtResource( 2 )]

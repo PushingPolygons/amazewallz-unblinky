@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Main/assets/Main.gd" type="Script" id=1]
 [ext_resource path="res://Maze/Maze.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Dood/Dood.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Worm/Worm.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -13,9 +13,9 @@ script = ExtResource( 1 )
 transform = Transform( 1, 0, 0, 0, 0.383538, 0.923525, 0, -0.923525, 0.383538, 8, 0, 8 )
 
 [node name="Camera" type="Camera" parent="CameraPivot"]
-transform = Transform( 1, 0, 0, 0, 1, 2.98023e-08, 0, 0, 1, 0, 4.76837e-07, 21.4948 )
-
-[node name="Dood" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 2.98023e-08, 0, -2.98023e-08, 1, 0, 4.76837e-07, 21.4948 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, -0.461284, 0.887252, 0, -0.887252, -0.461284, 0, 19.2678, -26.8246 )
+
+[node name="Worm" parent="." instance=ExtResource( 4 )]

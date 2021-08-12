@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Maze/assets/Room.gd" type="Script" id=1]
 [ext_resource path="res://Shaders/basic_shader.tres" type="Shader" id=2]
@@ -13,6 +13,14 @@ shader_param/BaseColor = Color( 0.470588, 0.313726, 0.501961, 1 )
 
 [sub_resource type="CubeMesh" id=3]
 
+[sub_resource type="BoxShape" id=4]
+
+[sub_resource type="BoxShape" id=5]
+
+[sub_resource type="BoxShape" id=6]
+
+[sub_resource type="BoxShape" id=7]
+
 [node name="Room" type="Spatial"]
 script = ExtResource( 1 )
 
@@ -21,22 +29,46 @@ transform = Transform( 2.3, 0, 0, 0, 0.2, 0, 0, 0, 2.3, 0, 0, 0 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
 
-[node name="WallUp" type="MeshInstance" parent="."]
+[node name="WallUp" type="StaticBody" parent="."]
+
+[node name="WallUp" type="MeshInstance" parent="WallUp"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0, -1 )
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="WallDown" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0, 1 )
-mesh = SubResource( 3 )
-material/0 = null
+[node name="CollisionShape" type="CollisionShape" parent="WallUp"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0, -1 )
+shape = SubResource( 4 )
 
-[node name="WallLeft" type="MeshInstance" parent="."]
+[node name="WallLeft" type="StaticBody" parent="."]
+
+[node name="WallLeft" type="MeshInstance" parent="WallLeft"]
 transform = Transform( -4.37114e-08, 0, 0.2, 0, 1, 0, -1, 0, -8.74228e-09, -1, 0, 4.37114e-08 )
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="WallRight" type="MeshInstance" parent="."]
+[node name="CollisionShape" type="CollisionShape" parent="WallLeft"]
+transform = Transform( -4.37114e-08, 0, 0.2, 0, 1, 0, -1, 0, -8.74228e-09, -1, 0, 4.37114e-08 )
+shape = SubResource( 5 )
+
+[node name="WallDown" type="StaticBody" parent="."]
+
+[node name="WallDown" type="MeshInstance" parent="WallDown"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0, 1 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="WallDown"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0, 1 )
+shape = SubResource( 6 )
+
+[node name="WallRight" type="StaticBody" parent="."]
+
+[node name="WallRight" type="MeshInstance" parent="WallRight"]
 transform = Transform( -4.37114e-08, 0, 0.2, 0, 1, 0, -1, 0, -8.74228e-09, 1, 0, -4.37114e-08 )
 mesh = SubResource( 3 )
 material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="WallRight"]
+transform = Transform( -4.37114e-08, 0, 0.2, 0, 1, 0, -1, 0, -8.74228e-09, 1, 0, -4.37114e-08 )
+shape = SubResource( 7 )

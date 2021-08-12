@@ -22,6 +22,10 @@ func Reset(color: Color) -> void:
 	$WallDown.show()
 	$WallLeft.show()
 	$WallRight.show()
+	$WallUp/CollisionShape.disabled = false
+	$WallDown/CollisionShape.disabled = false
+	$WallLeft/CollisionShape.disabled = false
+	$WallRight/CollisionShape.disabled = false
 	visited = false
 	
 #------------------------------------------------------------------------------
@@ -31,12 +35,16 @@ func DropWall(direction):
 	match direction:
 		Directions.UP:
 			$WallUp.hide()
+			$WallUp/CollisionShape.disabled = true
 		Directions.DOWN:
 			$WallDown.hide()
+			$WallDown/CollisionShape.disabled = true
 		Directions.LEFT:
 			$WallLeft.hide()
+			$WallLeft/CollisionShape.disabled = true
 		Directions.RIGHT:
 			$WallRight.hide()
+			$WallRight/CollisionShape.disabled = true
 			
 #------------------------------------------------------------------------------
 # SetFloorColor()

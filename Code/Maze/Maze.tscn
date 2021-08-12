@@ -18,7 +18,6 @@ margin_bottom = 61.2634
 custom_colors/font_color = Color( 0.764706, 0.768627, 0.329412, 1 )
 text = "- LMB [Step]
 - RMB [Reset]"
-percent_visible = 0.619048
 __meta__ = {
 "_edit_use_anchors_": false
 }
